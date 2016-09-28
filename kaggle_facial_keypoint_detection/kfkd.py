@@ -5,7 +5,7 @@ Created on Thu Sep 22 12:49:10 2016
 @author: gazkune
 """
 
-import os
+import os, sys
 
 import numpy as np
 from pandas.io.parsers import read_csv
@@ -72,84 +72,98 @@ def load2d(test=False, cols=None):
     X, y = load(test=test)
     X = X.reshape(-1, 1, 96, 96)
     return X, y
-
-"""
-X, y = load()
-print("X.shape == {}; X.min == {:.3f}; X.max == {:.3f}".format(
-    X.shape, X.min(), X.max()))
-print("y.shape == {}; y.min == {:.3f}; y.max == {:.3f}".format(
-    y.shape, y.min(), y.max()))
     
-net1 = Sequential()
-net1.add(Dense(100, input_dim=9216, activation='relu')) # input+hidden layer?
-net1.add(Dense(30)) # output layer
-
-net1.compile(loss='mean_squared_error', optimizer=SGD(lr=0.01, momentum=0.9, nesterov=True), metrics=['accuracy'])
-history = net1.fit(X, y, validation_split=0.2, nb_epoch=30, batch_size=128)
-
-print(history.history.keys())
-
-# summarize history for accuracy
-
-plt.plot(history.history['acc'])
-plt.plot(history.history['val_acc'])
-plt.title('model accuracy')
-plt.ylabel('accuracy')
-plt.xlabel('epoch')
-plt.legend(['train', 'test'], loc='upper left')
-plt.show()
-
-# summarize history for loss
-
-plt.plot(history.history['loss'])
-plt.plot(history.history['val_loss'])
-plt.title('model loss')
-plt.ylabel('loss')
-plt.xlabel('epoch')
-plt.ylim(1e-3, 1e-2)
-plt.yscale("log")
-plt.legend(['train', 'test'], loc='upper left')
-plt.show()
-
-# test net1 with the testing dataset
-X, _ = load(test=True)
-y_pred = net1.predict(X)
-
-fig = plt.figure(figsize=(6, 6))
-fig.subplots_adjust(
-    left=0, right=1, bottom=0, top=1, hspace=0.05, wspace=0.05)
-
-for i in range(16):
-    ax = fig.add_subplot(4, 4, i + 1, xticks=[], yticks=[])
-    plot_sample(X[i], y_pred[i], ax)
-
-plt.show()
+"""
+Function to plot accurary and loss during training
 """
 
-"""
-Model, train and test a Convolutional Neural Network
-"""
+def plot_training_info(metrics, history):
+    # summarize history for accuracy
+    if 'accuracy' in metrics:
+        plt.plot(history.history['acc'])
+        plt.plot(history.history['val_acc'])
+        plt.title('model accuracy')
+        plt.ylabel('accuracy')
+        plt.xlabel('epoch')
+        plt.legend(['train', 'test'], loc='upper left')
+        plt.show()
 
-net2 = Sequential()
-# Input and conv1 + maxpool1
-net2.add(Convolution2D(32, 3, 3, input_shape=(1, 96, 96), border_mode='valid'))
-net2.add(MaxPooling2D(pool_size=(2, 2)))
-# conv2 + pool2
-net2.add(Convolution2D(64, 2, 2, border_mode='valid'))
-net2.add(MaxPooling2D(pool_size=(2, 2)))
-# conv3 + pool3
-net2.add(Convolution2D(128, 2, 2, border_mode='valid'))
-net2.add(MaxPooling2D(pool_size=(2, 2)))
-net2.add(Flatten())
-# hidden4
-net2.add(Dense(500))
-# hidden5
-net2.add(Dense(500))
-# Output layer
-net2.add(Dense(30))
+    # summarize history for loss
+    if 'loss' in metrics:
+        plt.plot(history.history['loss'])
+        plt.plot(history.history['val_loss'])
+        plt.title('model loss')
+        plt.ylabel('loss')
+        plt.xlabel('epoch')
+        plt.ylim(1e-3, 1e-2)
+        plt.yscale("log")
+        plt.legend(['train', 'test'], loc='upper left')
+        plt.show()
+    
 
-net2.compile(loss='mean_squared_error', optimizer=SGD(lr=0.01, momentum=0.9, nesterov=True), metrics=['accuracy'])
-print(net2.summary())
+def main(argv):
+    """
+    # Load data as a 1D vector
+    X, y = load()
+    print("X.shape == {}; X.min == {:.3f}; X.max == {:.3f}".format(
+        X.shape, X.min(), X.max()))
+    print("y.shape == {}; y.min == {:.3f}; y.max == {:.3f}".format(
+        y.shape, y.min(), y.max()))
+    
+    # A fully-connected feed forward neural network    
+    net1 = Sequential()
+    net1.add(Dense(100, input_dim=9216, activation='relu')) # input+hidden layer?
+    net1.add(Dense(30)) # output layer
 
-X, y = load2d()  # load 2-d data
-history = net2.fit(X, y, validation_split=0.2, nb_epoch=30, batch_size=128)
+    net1.compile(loss='mean_squared_error', optimizer=SGD(lr=0.01, momentum=0.9, nesterov=True), metrics=['accuracy'])
+    history = net1.fit(X, y, validation_split=0.2, nb_epoch=30, batch_size=128)
+
+
+
+    # test net1 with the testing dataset
+    X, _ = load(test=True)
+    y_pred = net1.predict(X)
+
+    fig = plt.figure(figsize=(6, 6))
+    fig.subplots_adjust(left=0, right=1, bottom=0, top=1, hspace=0.05, wspace=0.05)
+
+    for i in range(16):
+        ax = fig.add_subplot(4, 4, i + 1, xticks=[], yticks=[])
+        plot_sample(X[i], y_pred[i], ax)
+
+    plt.show()
+    """
+
+    """
+    Model, train and test a Convolutional Neural Network
+    """
+    # load data as 2D matrix for the convolution layer
+    X, y = load2d()  
+
+    net2 = Sequential()
+    # Input and conv1 + maxpool1
+    net2.add(Convolution2D(32, 3, 3, input_shape=(1, 96, 96), border_mode='valid'))
+    net2.add(MaxPooling2D(pool_size=(2, 2)))
+    # conv2 + pool2
+    net2.add(Convolution2D(64, 2, 2, border_mode='valid'))
+    net2.add(MaxPooling2D(pool_size=(2, 2)))
+    # conv3 + pool3
+    net2.add(Convolution2D(128, 2, 2, border_mode='valid'))
+    net2.add(MaxPooling2D(pool_size=(2, 2)))
+    net2.add(Flatten())
+    # hidden4
+    net2.add(Dense(500))
+    # hidden5
+    net2.add(Dense(500))
+    # Output layer
+    net2.add(Dense(30))
+
+    net2.compile(loss='mean_squared_error', optimizer=SGD(lr=0.01, momentum=0.9, nesterov=True), metrics=['accuracy'])
+    print(net2.summary())
+    
+    history = net2.fit(X, y, validation_split=0.2, nb_epoch=1, batch_size=128)
+    
+    plot_training_info('accuracy', history)
+
+if __name__ == "__main__":
+   main(sys.argv)
