@@ -77,7 +77,7 @@ def load2d(test=False, cols=None):
 Function to plot accurary and loss during training
 """
 
-def plot_training_info(metrics, history):
+def plot_training_info(metrics, save, history):
     # summarize history for accuracy
     if 'accuracy' in metrics:
         plt.plot(history.history['acc'])
@@ -86,7 +86,10 @@ def plot_training_info(metrics, history):
         plt.ylabel('accuracy')
         plt.xlabel('epoch')
         plt.legend(['train', 'test'], loc='upper left')
-        plt.show()
+        if save == True:
+            plt.savefig('accuracy.png')
+        else:
+            plt.show()
 
     # summarize history for loss
     if 'loss' in metrics:
@@ -98,7 +101,10 @@ def plot_training_info(metrics, history):
         plt.ylim(1e-3, 1e-2)
         plt.yscale("log")
         plt.legend(['train', 'test'], loc='upper left')
-        plt.show()
+        if save == True:
+            plt.savefig('loss.png')
+        else:
+            plt.show()
     
 
 def main(argv):
@@ -171,7 +177,7 @@ def main(argv):
     net2.save_weights("net2.h5")
     print("Saved model to disk")
     
-    plot_training_info('accuracy', history)
+    plot_training_info('loss', True, history)
 
 if __name__ == "__main__":
    main(sys.argv)
