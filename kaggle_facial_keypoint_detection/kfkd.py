@@ -167,7 +167,7 @@ def main(argv):
     net2.compile(loss='mean_squared_error', optimizer=SGD(lr=0.01, momentum=0.9, nesterov=True), metrics=['accuracy'])
     print(net2.summary())
     
-    history = net2.fit(X, y, validation_split=0.2, nb_epoch=1, batch_size=128)
+    history = net2.fit(X, y, validation_split=0.2, nb_epoch=1000, batch_size=128)
     
     # serialize model to JSON
     model_json = net2.to_json()
