@@ -163,6 +163,14 @@ def main(argv):
     
     history = net2.fit(X, y, validation_split=0.2, nb_epoch=1, batch_size=128)
     
+    # serialize model to JSON
+    model_json = net2.to_json()
+    with open("net2.json", "w") as json_file:
+        json_file.write(model_json)
+    # serialize weights to HDF5
+    net2.save_weights("net2.h5")
+    print("Saved model to disk")
+    
     plot_training_info('accuracy', history)
 
 if __name__ == "__main__":
