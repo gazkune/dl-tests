@@ -12,6 +12,8 @@ from pandas.io.parsers import read_csv
 from sklearn.utils import shuffle
 import matplotlib.pyplot as plt
 
+import h5py
+
 # Keras imports
 from keras.models import Sequential
 from keras.layers import Dense, Convolution2D, MaxPooling2D, Flatten, Activation
@@ -178,6 +180,22 @@ def main(argv):
     print("Saved model to disk")
     
     plot_training_info('loss', True, history)
+
+    # Test and compare the results of net1 and net2
+    # We currently comment net1 
+    """
+    sample1 = load(test=True)[0][6:7]
+    sample2 = load2d(test=True)[0][6:7]
+    #y_pred1 = net1.predict(sample1)[0]
+    y_pred2 = net2.predict(sample2)[0]
+    
+    fig = plt.figure(figsize=(6, 3))
+    ax = fig.add_subplot(1, 2, 1, xticks=[], yticks=[])
+    #plot_sample(sample1[0], y_pred1, ax)
+    ax = fig.add_subplot(1, 2, 2, xticks=[], yticks=[])
+    plot_sample(sample1[0], y_pred2, ax)
+    plt.show()
+    """
 
 if __name__ == "__main__":
    main(sys.argv)
