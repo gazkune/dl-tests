@@ -64,6 +64,9 @@ model.add(LSTM(10, batch_input_shape=(1, 1, 1), return_sequences=False, stateful
 model.add(Dense(1, activation='sigmoid'))
 model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 
+print 'Model built'
+print(model.summary())
+
 max_len = X.shape[1]
 print('Train...')
 for epoch in range(15):
@@ -73,6 +76,7 @@ for epoch in range(15):
     mean_tr_loss = []
     for i in range(len(X_train)):
         y_true = y_train[i]
+        print 'y_true:', np.array([y_true]), np.array([y_true]).shape
         for j in range(max_len):
             tr_loss, tr_acc = model.train_on_batch(np.expand_dims(np.expand_dims(X_train[i][j], axis=1), axis=1),
                                                    np.array([y_true]))
